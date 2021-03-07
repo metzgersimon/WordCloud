@@ -6,10 +6,17 @@ ui <- fluidPage(theme = shinytheme("slate"),
                     "Word Cloud",
                     tabsetPanel(
                       tabPanel(
-                        title = "Test Cloud"
+                        title = "Test Cloud",
+                        plotOutput("cloud_plot")
                       ),
                       tabPanel(
-                        title = "Statistics"
+                        title = "Statistics",
+                        tabsetPanel(
+                          tabPanel("Tab1",
+                                   plotOutput("cloud_statistic")
+                                   )
+                        )
+                        
                       )
                     )
                   ),
