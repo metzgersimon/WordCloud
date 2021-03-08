@@ -21,21 +21,33 @@ server <- function(input, output){
     set.seed(991)
     
     cloud_frame <- get_text()
-    print(cloud_frame)
+
     wordcloud(words = cloud_frame$word, 
-              freq = cloud_frame$frequency, min.freq = 1,
-              max.words=200, random.order=FALSE, rot.per=0.35, 
-              colors=brewer.pal(8, "Dark2"))
+              freq = cloud_frame$frequency, min.freq = input$freq,
+              max.words = input$max, random.order = FALSE, rot.per = 0.35, 
+              colors = brewer.pal(8, "Dark2"))
   })
   
 
   output$cloud_statistic <- renderPlot({
     plot_frame <- get_text()
+    plot_frame$word <- 
+      factor(plot_frame$word, 
+             levels = plot_frame$word[order(plot_frame$frequency)])
     
-    barplot(plot_frame[1:10,]$frequency, las = 2, 
-            names.arg = plot_frame[1:10,]$word,
-            col ="cyan", main ="Most frequent words",
-            ylab = "Word frequencies")
+   
+    plot_frame <- head(plot_frame, 15)
+    
+    # barplot(plot_frame[1:10,]$frequency, las = 2, 
+    #         names.arg = plot_frame[1:10,]$word,
+    #         col ="cyan", main ="Most frequent words",
+    #         ylab = "Word frequencies")
+    
+    ggplot(plot_frame, aes(x = frequency, y = word, color = word))+
+      geom_bar(stat = "identity", fill = "black")+
+      scale_fill_manual(values = rainbow(15))+
+      theme_bw()
+      
     
   })
   
