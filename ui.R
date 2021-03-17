@@ -10,8 +10,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                  "freq",
                                  "Minimum Frequency:",
                                  min = 1,
-                                 max = 200,
-                                 value = 50
+                                 max = 100,
+                                 value = 10
                                ),
                                sliderInput(
                                  "max",
@@ -27,13 +27,12 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                  tabPanel(title = "Test Cloud",
                                           plotOutput("cloud_plot")),
                                  tabPanel(title = "Statistics",
-                                          tabsetPanel(tabPanel(
-                                            "Tab1",
+                                      
                                             plotOutput("cloud_statistic")
-                                          )))
+                                          ))
                                )
                              ))
-                           )),
+                           ),
                   tabPanel(
                     "Text Input",
                     fluidRow(
