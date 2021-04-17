@@ -6,6 +6,7 @@ server <- function(input, output, session){
     text <- get_text()
     updateSliderInput(session,inputId = "freq", max = max(text$frequency))
     updateSliderInput(session, inputId = "max", max = nrow(text))
+    # updateSelectInput(session, inputId = "color_scheme", choices =
   })
   
   get_text <- reactive({
@@ -42,13 +43,14 @@ server <- function(input, output, session){
   output$cloud_plot <- renderPlot({
     set.seed(991)
     
-    cloud_frame <- get_text()# %>%
-      #filter(frequency >= input$freq)
-    
+    cloud_frame <- get_text()
+    # set user chosen color
+    color = brewer.pal(n = 8, input$color_scheme)
+    # create word cloud with custom parameters
     wordcloud_rep(words = cloud_frame$word, 
                   freq = cloud_frame$frequency, min.freq = input$freq,
-                  max.words = input$max, random.order = FALSE, rot.per = 0.35, 
-                  colors = cividis(n = 10))
+                  max.words = input$max, random.order = FALSE, rot.per = input$rotation, 
+                  colors = color)
   })
   
 

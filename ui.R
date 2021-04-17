@@ -8,17 +8,30 @@ ui <- fluidPage(theme = shinytheme("slate"),
                              sidebarPanel(
                                sliderInput(
                                  "freq",
-                                 "Minimum Frequency:",
+                                 "Minimum frequency:",
                                  min = 1,
                                  max = 100,
                                  value = 10
                                ),
                                sliderInput(
                                  "max",
-                                 "Maximum Number of Words:",
+                                 "Maximum number of words:",
                                  min = 1,
                                  max = 500,
                                  value = 250
+                               ),
+                               selectInput(
+                                 "color_scheme",
+                                 "Choose a color scheme:",
+                                 choices = rownames(brewer.pal.info),
+                                 selected = ""
+                               ),
+                               sliderInput(
+                                 "rotation",
+                                 "Rotation of words:",
+                                 min = 0,
+                                 max = 1,
+                                 value = 0
                                )
                              ),
                              mainPanel(tabPanel(
