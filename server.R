@@ -1,5 +1,12 @@
 
-server <- function(input, output){
+server <- function(input, output, session){
+  
+  observe({
+    # req(input$text)
+    text <- get_text()
+    updateSliderInput(session,inputId = "freq", max = max(text$frequency))
+    updateSliderInput(session, inputId = "max", max = nrow(text))
+  })
   
   get_text <- reactive({
     if(!is.null(input$text)){
@@ -35,12 +42,13 @@ server <- function(input, output){
   output$cloud_plot <- renderPlot({
     set.seed(991)
     
-    cloud_frame <- get_text()
-
+    cloud_frame <- get_text()# %>%
+      #filter(frequency >= input$freq)
+    
     wordcloud_rep(words = cloud_frame$word, 
-              freq = cloud_frame$frequency, min.freq = input$freq,
-              max.words = input$max, random.order = FALSE, rot.per = 0.35, 
-              colors = cividis(n = 10))
+                  freq = cloud_frame$frequency, min.freq = input$freq,
+                  max.words = input$max, random.order = FALSE, rot.per = 0.35, 
+                  colors = cividis(n = 10))
   })
   
 
