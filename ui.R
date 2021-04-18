@@ -20,18 +20,38 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                  max = 500,
                                  value = 250
                                ),
-                               selectInput(
-                                 "color_scheme",
-                                 "Choose a color scheme:",
-                                 choices = rownames(brewer.pal.info),
-                                 selected = ""
-                               ),
                                sliderInput(
                                  "rotation",
                                  "Rotation of words:",
                                  min = 0,
                                  max = 1,
                                  value = 0
+                               ),
+                               # radioButtons(
+                               #   "color_system",
+                               #   "Predefined or custom color scheme",
+                               #   choiceNames = c("Predefined","Custom"),
+                               #   choiceValues = 
+                               # )
+                               selectInput(
+                                 "color_scheme",
+                                 "Choose a color scheme:",
+                                 choices = rownames(brewer.pal.info),
+                                 selected = ""
+                               ),
+                               colourInput(
+                                 "color_picker",
+                                 "Choose custom colors:",
+                                 closeOnClick = TRUE
+                               ),
+                               selectizeInput(
+                                 "colors",
+                                 "Colors: ",
+                                 choices = NULL,
+                                 multiple = TRUE,
+                                 options = list(
+                                   placeHolder = ""
+                                 )
                                )
                              ),
                              mainPanel(tabPanel(

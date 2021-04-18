@@ -7,7 +7,10 @@ server <- function(input, output, session){
     updateSliderInput(session,inputId = "freq", max = max(text$frequency))
     updateSliderInput(session, inputId = "max", max = nrow(text))
     # updateSelectInput(session, inputId = "color_scheme", choices =
+    updateSelectizeInput(session, inputId = "colors", 
+                         choices = c("HALLO",input$color_picker), server = TRUE)
   })
+
   
   get_text <- reactive({
     if(!is.null(input$text)){
@@ -58,19 +61,20 @@ server <- function(input, output, session){
     plot_frame <- get_text()
     plot_frame$word <- 
       factor(plot_frame$word, 
-             levels = plot_frame$word[order(plot_frame$frequency)])
+             levels = plot_frame$word[order(plot_frame$frequency, 
+                                            decreasing = TRUE)])
     
    
     plot_frame <- head(plot_frame, 15)
     
-    ggplot(plot_frame, aes(x = frequency, y = word, color = word))+
-      geom_bar(stat = "identity", fill = "black")+
-      scale_fill_manual(values = rainbow(15))+
-      theme_dark()+
+    ggplot(plot_frame, aes(x = word, y = frequency))+
+      geom_bar(stat = "identity", fill = "darkblue")+
       theme(legend.position = "none",
-            panel.grid.major.y = element_blank(),
-            panel.grid.minor.y = element_blank())+
-      scale_x_discrete("Frequency", )
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            plot.title = element_text(hjust = 0.5))+
+      ggtitle("15 Most frequent words")+
+      labs(x = "Word", y = "Frequency")
       
     
   })

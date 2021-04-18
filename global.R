@@ -14,7 +14,7 @@ library(dplyr)
 library(ggplot2)
 library(viridisLite)
 library(colorspace)
-#library(piratepal)
+library(colourpicker)
 
 source("./functions/get_clean_text.R", local = TRUE)
 source("./functions/get_term_document_matrix.R", local = TRUE)
