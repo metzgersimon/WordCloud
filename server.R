@@ -14,7 +14,33 @@ server <- function(input, output, session){
     updateSelectizeInput(session, "colors", choices = "",
                          selected = "")
   })
-
+  
+  observeEvent(input$download_wordcloud, {
+    saveWidget(wordcloud_rep, file = "test.html")
+  })
+  
+  # creates the frequency plot of the word in the data set
+  # which is displayed in the "Statistic" tab
+  get_frequency_plot <- reactive({
+    plot_frame <- get_text()
+    plot_frame$word <- 
+      factor(plot_frame$word, 
+             levels = plot_frame$word[order(plot_frame$frequency, 
+                                            decreasing = TRUE)])
+    
+    
+    plot_frame <- head(plot_frame, 15)
+    
+    ggplot(plot_frame, aes(x = word, y = frequency))+
+      geom_bar(stat = "identity", fill = "darkblue")+
+      theme(legend.position = "none",
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            plot.title = element_text(hjust = 0.5))+
+      ggtitle("15 Most frequent words")+
+      labs(x = "Word", y = "Frequency")
+  })
+  
   
   observe({
     text <- get_text()
@@ -66,28 +92,22 @@ server <- function(input, output, session){
                   colors = color)
   })
   
+  
+  
 
   output$cloud_statistic <- renderPlot({
-    plot_frame <- get_text()
-    plot_frame$word <- 
-      factor(plot_frame$word, 
-             levels = plot_frame$word[order(plot_frame$frequency, 
-                                            decreasing = TRUE)])
-    
-   
-    plot_frame <- head(plot_frame, 15)
-    
-    ggplot(plot_frame, aes(x = word, y = frequency))+
-      geom_bar(stat = "identity", fill = "darkblue")+
-      theme(legend.position = "none",
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            plot.title = element_text(hjust = 0.5))+
-      ggtitle("15 Most frequent words")+
-      labs(x = "Word", y = "Frequency")
-      
-    
+    get_frequency_plot()
   })
+  
+  output$download_statistic <- downloadHandler(
+    filename = "word_cloud.png",
+    contentType = "image/png",
+    content = function(file) {
+      png(file)
+      print(get_frequency_plot())
+      dev.off()
+    }
+  )
   
   output$text_head <- renderDataTable({
     get_text()

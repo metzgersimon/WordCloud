@@ -39,14 +39,29 @@ ui <- fluidPage(
                    tabPanel("Word Cloud", 
                             tabsetPanel(
                               tabPanel(title = "Test Cloud",
-                                       plotOutput("cloud_plot")),
+                                       plotOutput("cloud_plot"),
+                                       actionButton("download_wordcloud",
+                                                    "Save Image",
+                                                    icon = icon("camera"))),
                               tabPanel(title = "Statistics",
-                                       plotOutput("cloud_statistic"))
+                                       plotOutput("cloud_statistic"),
+                                       fluidRow(
+                                         column(
+                                           width = 4,
+                                           div(style = "margin-top:15px",
+                                               downloadBttn("download_statistic",
+                                                            "Save Image",
+                                                            style = "jelly",
+                                                            color = "success")
+                                               )
+                                           )
+                                         )
+                                       )
                               )
                             )
                    )
-               )
-             ),
+                 )
+               ),
              tabPanel("Text Input",
                       fluidRow(
                         fileInput("text", label = "Select a local text: ",
