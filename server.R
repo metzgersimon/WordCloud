@@ -1,14 +1,26 @@
 
 server <- function(input, output, session){
   
+  sync <- reactiveValues(colors = NULL)
+  
+  observeEvent(input$color_picker, {
+    sync$colors <- c(sync$colors, input$color_picker)
+    updateSelectizeInput(session, "colors", choices = sync$colors,
+                         selected = sync$colors)
+  })
+  
+  observeEvent(input$delete_colors, {
+    sync$colors <- NULL
+    updateSelectizeInput(session, "colors", choices = "",
+                         selected = "")
+  })
+
+  
   observe({
-    # req(input$text)
     text <- get_text()
     updateSliderInput(session,inputId = "freq", max = max(text$frequency))
     updateSliderInput(session, inputId = "max", max = nrow(text))
-    # updateSelectInput(session, inputId = "color_scheme", choices =
-    updateSelectizeInput(session, inputId = "colors", 
-                         choices = c("HALLO",input$color_picker), server = TRUE)
+    updateTextInput(session, inputId = "colors2", value = input$color_picker)
   })
 
   
@@ -19,22 +31,15 @@ server <- function(input, output, session){
       
       req(file)
       validate(need(ext == "txt", "Please upload a .txt file"))
-      
       text = readLines(file$datapath)
-      
       cleaned_text <- get_clean_text(text)
-      
       frequency_frame <- get_term_document_matrix(cleaned_text)
-      
       frequency_frame
     }
     else{
       text = readLines("data/text.txt")
-      
       cleaned_text <- get_clean_text(text)
-      
       frequency_frame <- get_term_document_matrix(cleaned_text)
-      
       frequency_frame
     }
     
@@ -42,13 +47,18 @@ server <- function(input, output, session){
   
   wordcloud_rep <- repeatable(wordcloud)
   
-  
   output$cloud_plot <- renderPlot({
     set.seed(991)
     
     cloud_frame <- get_text()
-    # set user chosen color
-    color = brewer.pal(n = 8, input$color_scheme)
+    
+    if(input$color_system == "Predefined"){
+      color <- get_colors(color_scheme = input$color_scheme)
+    } else{
+      req(input$apply_colors)
+      color <- get_colors(is_custom = TRUE, custom_colors = input$colors)
+    }
+    
     # create word cloud with custom parameters
     wordcloud_rep(words = cloud_frame$word, 
                   freq = cloud_frame$frequency, min.freq = input$freq,
@@ -80,7 +90,6 @@ server <- function(input, output, session){
   })
   
   output$text_head <- renderDataTable({
-    
     get_text()
     
   })

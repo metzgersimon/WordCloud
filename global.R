@@ -15,6 +15,11 @@ library(ggplot2)
 library(viridisLite)
 library(colorspace)
 library(colourpicker)
+library(miceadds)
 
-source("./functions/get_clean_text.R", local = TRUE)
-source("./functions/get_term_document_matrix.R", local = TRUE)
+source.all("functions/")
+# for (file in list.files(pattern = "*.R")){
+#   source(file)
+# }
+#source("./functions/get_clean_text.R", local = TRUE)
+#source("./functions/get_term_document_matrix.R", local = TRUE)
