@@ -113,4 +113,8 @@ server <- function(input, output, session){
     get_text()
     
   })
+  
+  output$testcloud <- renderWordcloud2({
+    wordcloud2(get_text(), backgroundColor = "black")
+  })
 }

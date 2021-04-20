@@ -62,6 +62,7 @@ ui <- fluidPage(
                    )
                  )
                ),
+             tabPanel("Wordclout2",wordcloud2Output("testcloud")),
              tabPanel("Text Input",
                       fluidRow(
                         fileInput("text", label = "Select a local text: ",
@@ -70,5 +71,6 @@ ui <- fluidPage(
                       fluidRow(
                         dataTableOutput("text_head"))
                       )
+             
   )
 )
