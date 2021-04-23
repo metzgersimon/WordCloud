@@ -49,17 +49,6 @@ ui <- fluidPage(
                                        downloadButton("download_frequencies",
                                                       "Save Image",
                                                       icon = icon("camera"))
-                                       # fluidRow(
-                                       #   column(
-                                       #     width = 4,
-                                       #     div(style = "margin-top:15px",
-                                       #         downloadBttn("download_statistic",
-                                       #                      "Save Image",
-                                       #                      style = "jelly",
-                                       #                      color = "success")
-                                       #         )
-                                       #     )
-                                       #   )
                                        )
                               )
                             )
@@ -85,11 +74,18 @@ ui <- fluidPage(
                           conditionalPanel(condition = "input.wordcloud2_shape_type == 'Custom'",
                                            textInput("wordcloud2_word_shape", "Custom shape",
                                                      placeholder = "")
-                                           )
+                                           ),
+                          sliderInput("font_size", "Font size", value = 0.5, 
+                                      min = 0.1, max = 1),
+                          sliderInput("rotation_ratio", "Rotation probability",
+                                      min = 0, max = 1, value = 0.4)
                           
                         ),
                         mainPanel(
-                          wordcloud2Output("testcloud")
+                          wordcloud2Output("wordcloud2"),
+                          downloadButton("download_wordcloud2",
+                                         "Save Image",
+                                         icon = icon("camera"))
                           )
                         ) 
                       ),

@@ -19,4 +19,6 @@ library(miceadds)
 library(htmlwidgets)
 library(webshot)
 
+webshot::install_phantomjs() 
+webshot:::find_phantom()
 source.all("functions/")
