@@ -22,7 +22,7 @@ server <- function(input, output, session){
   # creates the frequency plot of the word in the data set
   # which is displayed in the "Statistic" tab
   get_frequency_plot <- reactive({
-    plot_frame <- get_text()
+    plot_frame <- get_text(input$text)
     plot_frame$word <- 
       factor(plot_frame$word, 
              levels = plot_frame$word[order(plot_frame$frequency, 
@@ -43,40 +43,19 @@ server <- function(input, output, session){
   
   
   observe({
-    text <- get_text()
+    text <- get_text(input$text)
     updateSliderInput(session,inputId = "freq", max = max(text$frequency))
     updateSliderInput(session, inputId = "max", max = nrow(text))
     updateTextInput(session, inputId = "colors2", value = input$color_picker)
   })
-
   
-  get_text <- reactive({
-    if(!is.null(input$text)){
-      file <- input$text
-      ext <- tools::file_ext(file$datapath)
-      
-      req(file)
-      validate(need(ext == "txt", "Please upload a .txt file"))
-      text = readLines(file$datapath)
-      cleaned_text <- get_clean_text(text)
-      frequency_frame <- get_term_document_matrix(cleaned_text)
-      frequency_frame
-    }
-    else{
-      text = readLines("data/text.txt")
-      cleaned_text <- get_clean_text(text)
-      frequency_frame <- get_term_document_matrix(cleaned_text)
-      frequency_frame
-    }
-    
-  })
   
   wordcloud_rep <- repeatable(wordcloud)
   
-  output$cloud_plot <- renderPlot({
+  wordcloud_reac <- reactive({
     set.seed(991)
     
-    cloud_frame <- get_text()
+    cloud_frame <- get_text(input$text)
     
     if(input$color_system == "Predefined"){
       color <- get_colors(color_scheme = input$color_scheme)
@@ -84,7 +63,6 @@ server <- function(input, output, session){
       req(input$apply_colors)
       color <- get_colors(is_custom = TRUE, custom_colors = input$colors)
     }
-    
     # create word cloud with custom parameters
     wordcloud_rep(words = cloud_frame$word, 
                   freq = cloud_frame$frequency, min.freq = input$freq,
@@ -92,15 +70,49 @@ server <- function(input, output, session){
                   colors = color)
   })
   
+  wordcloud_image <- reactive({
+    set.seed(991)
+    
+    cloud_frame <- get_text(input$text)
+    
+    if(input$color_system == "Predefined"){
+      color <- get_colors(color_scheme = input$color_scheme)
+    } else{
+      req(input$apply_colors)
+      color <- get_colors(is_custom = TRUE, custom_colors = input$colors)
+    }
+   
+    png("wordcloud.png")
+    # create word cloud with custom parameters
+    wordcloud_rep(words = cloud_frame$word, 
+                  freq = cloud_frame$frequency, min.freq = input$freq,
+                  max.words = input$max, random.order = FALSE, rot.per = input$rotation, 
+                  colors = color)
+    dev.off()
+    
+    filename = "wordcloud.png"
+  })
+
   
-  
+  output$cloud_plot <- renderPlot({
+    wordcloud_reac()
+  })
 
   output$cloud_statistic <- renderPlot({
     get_frequency_plot()
   })
   
-  output$download_statistic <- downloadHandler(
-    filename = "word_cloud.png",
+  
+  
+  output$download_wordcloud <- downloadHandler(
+    filename = "wordcloud.png",
+    content = function(cloud) {
+      file.copy(wordcloud_image(), cloud)
+    })
+
+  
+  output$download_frequencies <- downloadHandler(
+    filename = "frequency_bars.png",
     contentType = "image/png",
     content = function(file) {
       png(file)
@@ -110,11 +122,22 @@ server <- function(input, output, session){
   )
   
   output$text_head <- renderDataTable({
-    get_text()
+    get_text(input$text)
     
   })
   
+  cloud_reactive <- reactive({
+    if(input$wordcloud2_shape_type == "Predefined"){
+      cloud <-
+        wordcloud2(get_text(input$text), backgroundColor = input$wordcloud2_color,
+                 shape = input$wordcloud2_shape)
+    }else if(input$wordcloud2_shape_type == "Custom"){
+      cloud <- letterCloud(get_text(input$text), word = "O")
+    }
+    return(cloud)
+  })
+  
   output$testcloud <- renderWordcloud2({
-    wordcloud2(get_text(), backgroundColor = "black")
+    cloud_reactive()
   })
 }

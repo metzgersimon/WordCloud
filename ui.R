@@ -38,31 +38,61 @@ ui <- fluidPage(
                  mainPanel(
                    tabPanel("Word Cloud", 
                             tabsetPanel(
-                              tabPanel(title = "Test Cloud",
+                              tabPanel(title = "Word Cloud",
+                                      # imageOutput("cloud_plot"),
                                        plotOutput("cloud_plot"),
-                                       actionButton("download_wordcloud",
+                                       downloadButton("download_wordcloud",
                                                     "Save Image",
                                                     icon = icon("camera"))),
-                              tabPanel(title = "Statistics",
+                              tabPanel(title = "Frequencies",
                                        plotOutput("cloud_statistic"),
-                                       fluidRow(
-                                         column(
-                                           width = 4,
-                                           div(style = "margin-top:15px",
-                                               downloadBttn("download_statistic",
-                                                            "Save Image",
-                                                            style = "jelly",
-                                                            color = "success")
-                                               )
-                                           )
-                                         )
+                                       downloadButton("download_frequencies",
+                                                      "Save Image",
+                                                      icon = icon("camera"))
+                                       # fluidRow(
+                                       #   column(
+                                       #     width = 4,
+                                       #     div(style = "margin-top:15px",
+                                       #         downloadBttn("download_statistic",
+                                       #                      "Save Image",
+                                       #                      style = "jelly",
+                                       #                      color = "success")
+                                       #         )
+                                       #     )
+                                       #   )
                                        )
                               )
                             )
                    )
                  )
                ),
-             tabPanel("Wordclout2",wordcloud2Output("testcloud")),
+             tabPanel("Wordcloud2",
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput("wordcloud2_color", "Background color",
+                                      choices = c("black", "green", "blue",
+                                                  "white")),
+                          radioButtons("wordcloud2_shape_type", "Predefined shape or custom shape",
+                                       choices = c("Predefined", "Custom"),
+                                       selected = "Predefined"),
+                          conditionalPanel(condition = "input.wordcloud2_shape_type == 'Predefined'",
+                                           selectInput("wordcloud2_shape", "Shape of the cloud",
+                                                       choices = c("circle", "cardioid", "diamond",
+                                                                   "triangle-forward","triangle",
+                                                                   "pentagon", "star")
+                                                       )
+                                           ),
+                          conditionalPanel(condition = "input.wordcloud2_shape_type == 'Custom'",
+                                           textInput("wordcloud2_word_shape", "Custom shape",
+                                                     placeholder = "")
+                                           )
+                          
+                        ),
+                        mainPanel(
+                          wordcloud2Output("testcloud")
+                          )
+                        ) 
+                      ),
              tabPanel("Text Input",
                       fluidRow(
                         fileInput("text", label = "Select a local text: ",
@@ -71,6 +101,5 @@ ui <- fluidPage(
                       fluidRow(
                         dataTableOutput("text_head"))
                       )
-             
+             )
   )
-)
