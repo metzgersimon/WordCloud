@@ -158,11 +158,16 @@ server <- function(input, output, session){
   })
   
   output$text_head <- renderDataTable({
-    get_text(input$text)
+    datatable(data = get_text(input$text),
+              class = "compact hover stripe",
+              options = list(
+                initComplete = JS("function(settings, json) {",
+                                  "$(this.api().table().header()).css({'color': '#000000'});",
+                                  "}")
+                )
+              )
+    
     
   })
-  
- 
-
 
 }

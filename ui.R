@@ -95,7 +95,10 @@ ui <- fluidPage(
                                   placeholder = ".txt file", accept = ".txt")
                         ),
                       fluidRow(
-                        dataTableOutput("text_head"))
+                        tags$style(HTML(get_datatable_style())),
+                        column(width = 6, offset = 3, align = "center",
+                               dataTableOutput("text_head"))
+                        )
                       )
              )
   )
