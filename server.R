@@ -162,7 +162,7 @@ server <- function(input, output, session){
               class = "compact hover stripe",
               options = list(
                 initComplete = JS("function(settings, json) {",
-                                  "$(this.api().table().header()).css({'color': '#000000'});",
+                                  "$(this.api().table().header()).css({'color': '#ffffff'});",
                                   "}")
                 )
               )

@@ -39,7 +39,7 @@ get_datatable_style <- function(){
   box-shadow: none;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  color: white !important;
+  color: black !important;
   border: 1px solid #00ffff;
   background-color: #8fffff;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8fffff), color-stop(100%, #00ffff));
@@ -73,12 +73,14 @@ get_datatable_style <- function(){
   box-shadow: inset 0 0 3px #111;
 }
 
+.dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter,
 .dataTables_wrapper .dataTables_info,
 .dataTables_wrapper .dataTables_processing,
 .dataTables_wrapper .dataTables_paginate {
-  color: #ffffff;
-}"
+  color: #b3b3b3;
+};"
+
 return(css_string)
 }
 #.dataTables_wrapper .dataTables_length,
